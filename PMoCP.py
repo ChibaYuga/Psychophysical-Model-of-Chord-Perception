@@ -70,6 +70,22 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
+pitchName = ["C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5", "C6"]
+
+F0_freqDict = dict(zip(pitchName, F0_freq))
+F1_freqDict = dict(zip(pitchName, F1_freq))
+F2_freqDict = dict(zip(pitchName, F2_freq))
+F3_freqDict = dict(zip(pitchName, F3_freq))
+F4_freqDict = dict(zip(pitchName, F4_freq))
+F5_freqDict = dict(zip(pitchName, F5_freq))
+
+F0_ampDict = dict(zip(pitchName, F0_amp))
+F1_ampDict = dict(zip(pitchName, F1_amp))
+F2_ampDict = dict(zip(pitchName, F2_amp))
+F3_ampDict = dict(zip(pitchName, F3_amp))
+F4_ampDict = dict(zip(pitchName, F4_amp))
+F5_ampDict = dict(zip(pitchName, F5_amp))
+
 # -----------------------------------------------------------------------------
 
 
@@ -79,6 +95,18 @@ def main():
     third = second + 3
     forth = 13 -third + root
     overtone_range = 6
+    
+    rootD = "C4"
+    secondD = "E4"
+    thirdD = "G4"
+    forthD = "B4"
+
+    # print(dis_tet(root, second, third, overtone_range))
+    print(ins_tri(rootD, 
+                  secondD, 
+                  thirdD, 
+                #   forthD,
+                  overtone_range))
 
     # tension_tri = ten_tri(root, second, third, overtone_range)
     # print(tension_tri)
@@ -89,33 +117,33 @@ def main():
 
     
 
-    ins_list =[]
-    for i in range(0,forth):
-        ins_list.append(ins_tet(root, second, third, third + i, overtone_range))
+    # ins_list =[]
+    # for i in range(0,forth):
+    #     ins_list.append(ins_tet(root, second, third, third + i, overtone_range))
 
-    # dissonance_tri = dis_tri(root, second, third, overtone_range)
-    # print(ten_list)
+    # # dissonance_tri = dis_tri(root, second, third, overtone_range)
+    # # print(ten_list)
     
-    # グラフ
-    fig, ax = plt.subplots()
-    t = np.linspace(0, forth-1, forth)
+    # # グラフ
+    # fig, ax = plt.subplots()
+    # t = np.linspace(0, forth-1, forth)
 
-    ax.set_xlabel('third interval(semitone)')
-    ax.set_ylabel('Instability')
-    ax.set_title(r'I')
+    # ax.set_xlabel('third interval(semitone)')
+    # ax.set_ylabel('Instability')
+    # ax.set_title(r'I')
 
-    figsize=(6.4, 4.8/0.96)
+    # figsize=(6.4, 4.8/0.96)
 
-    ax.grid()
-    ax.plot(t, ins_list)
+    # ax.grid()
+    # ax.plot(t, ins_list)
 
-    # 凡例
-    ax.legend(loc=0)   
+    # # 凡例
+    # ax.legend(loc=0)   
 
-    # レイアウトの設定
-    fig.tight_layout()
+    # # レイアウトの設定
+    # fig.tight_layout()
 
-    plt.show()  
+    # plt.show()  
 
     # # グラフ
     # fig, ax = plt.subplots()
@@ -140,14 +168,6 @@ def main():
 
     return
 
-# root      : 最低音
-# second    : 二音目
-# base      : 調
-# ind       : 三音目(最低音の1オクターブ上まで動かす)
-# i         : 最低音の倍音のためのindex(~5)、最低音のi倍音まで計算に利用する
-# j         : 二音目の倍音のためのindex(~5)、二音目のj倍音まで計算に利用する
-# k         : 三音目の倍音のためのindex(~5)、三音目のk倍音まで計算に利用する
-
 # C4, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B  ~C
 # 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11 ~24
 
@@ -165,16 +185,15 @@ def dissonance_partial(f1, f2, a1, a2):
 
 # 2 tones Dissonance
 def dis_bi(root, second, overtone_range):
-    dis_list = [[] for _ in range(overtone_range)]
 
     for o_r in range(0,overtone_range):
         d_par = 0
         for i in range(0, o_r+1):
             for j in range(0, o_r+1):
-                partial1_amp = "F" + str(i) + "_amp[" + str(root) + "]"
-                partial2_amp = "F" + str(j) + "_amp[" + str(second) + "]"
-                partial1_freq = "F" + str(i) + "_freq[" + str(root) + "]"
-                partial2_freq = "F" + str(j) + "_freq[" + str(second) + "]"
+                partial1_amp = "F" + str(i) + "_ampDict[\"" + root + "\"]"
+                partial2_amp = "F" + str(j) + "_ampDict[\"" + second + "\"]"
+                partial1_freq = "F" + str(i) + "_freqDict[\"" + root + "\"]"
+                partial2_freq = "F" + str(j) + "_freqDict[\"" + second + "\"]"
 
                 # 選んだ2音を小さい順にソート
                 # 音量(振幅)は積を使うだけなのでそのまま
@@ -204,12 +223,12 @@ def ten_tri(root, second, third, overtone_range):
         for i in range(0, o_r+1):
             for j in range(0, o_r+1):
                 for k in range(0, o_r+1):
-                    partial1_amp = "F" + str(i) + "_amp[" + str(root) + "]"
-                    partial2_amp = "F" + str(j) + "_amp[" + str(second) + "]"
-                    partial3_amp = "F" + str(k) + "_amp[" + str(third) + "]"
-                    partial1_freq = "F" + str(i) + "_freq[" + str(root) + "]"
-                    partial2_freq = "F" + str(j) + "_freq[" + str(second) + "]"
-                    partial3_freq = "F" + str(k) + "_freq[" + str(third) + "]"
+                    partial1_amp = "F" + str(i) + "_ampDict[\"" + root + "\"]"
+                    partial2_amp = "F" + str(j) + "_ampDict[\"" + second + "\"]"
+                    partial3_amp = "F" + str(k) + "_ampDict[\"" + third + "\"]"
+                    partial1_freq = "F" + str(i) + "_freqDict[\"" + root + "\"]"
+                    partial2_freq = "F" + str(j) + "_freqDict[\"" + second + "\"]"
+                    partial3_freq = "F" + str(k) + "_freqDict[\"" + third + "\"]"
 
                     # 選んだ3音を小さい順にソート
                     # 音量(振幅)は積を使うだけなのでそのまま
@@ -234,12 +253,12 @@ def mod_tri(root, second, third, overtone_range):
         for i in range(0, o_r+1):
             for j in range(0, o_r+1):
                 for k in range(0, o_r+1):
-                    partial1_amp = "F" + str(i) + "_amp[" + str(root) + "]"
-                    partial2_amp = "F" + str(j) + "_amp[" + str(second) + "]"
-                    partial3_amp = "F" + str(k) + "_amp[" + str(third) + "]"
-                    partial1_freq = "F" + str(i) + "_freq[" + str(root) + "]"
-                    partial2_freq = "F" + str(j) + "_freq[" + str(second) + "]"
-                    partial3_freq = "F" + str(k) + "_freq[" + str(third) + "]"
+                    partial1_amp = "F" + str(i) + "_ampDict[\"" + root + "\"]"
+                    partial2_amp = "F" + str(j) + "_ampDict[\"" + second + "\"]"
+                    partial3_amp = "F" + str(k) + "_ampDict[\"" + third + "\"]"
+                    partial1_freq = "F" + str(i) + "_freqDict[\"" + root + "\"]"
+                    partial2_freq = "F" + str(j) + "_freqDict[\"" + second + "\"]"
+                    partial3_freq = "F" + str(k) + "_freqDict[\"" + third + "\"]"
 
                     # 選んだ3音を小さい順にソート
                     # 音量(振幅)は積を使うだけなのでそのまま
