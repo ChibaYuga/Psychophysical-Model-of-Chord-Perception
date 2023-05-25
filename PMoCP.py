@@ -11,6 +11,7 @@ beta3 = 4.00
 gamma = 1.250
 a = 0.60
 e = 1.558
+sigma = 0.207
 
 # 音程(log(f2/f1))の底
 b = pow(2, 1.0/12.0)
@@ -88,9 +89,9 @@ def main():
 
     
 
-    mod_list =[]
+    ins_list =[]
     for i in range(0,forth):
-        mod_list.append(mod_tet(root, second, third, third + i, overtone_range))
+        ins_list.append(ins_tet(root, second, third, third + i, overtone_range))
 
     # dissonance_tri = dis_tri(root, second, third, overtone_range)
     # print(ten_list)
@@ -100,13 +101,13 @@ def main():
     t = np.linspace(0, forth-1, forth)
 
     ax.set_xlabel('third interval(semitone)')
-    ax.set_ylabel('modality')
-    ax.set_title(r'M')
+    ax.set_ylabel('Instability')
+    ax.set_title(r'I')
 
     figsize=(6.4, 4.8/0.96)
 
     ax.grid()
-    ax.plot(t, mod_list)
+    ax.plot(t, ins_list)
 
     # 凡例
     ax.legend(loc=0)   
@@ -158,11 +159,11 @@ def main():
 
 
 
-# dissonance caliculation
+# Dissonance caliculation
 def dissonance_partial(f1, f2, a1, a2):
     return  a1 * a2 * beta3 * (math.exp((-1) * beta1 * math.log(f2 / f1, b) ** gamma) - math.exp((-1) * beta2 * math.log(f2 / f1, b) ** gamma))
 
-# 2 tones dissonance
+# 2 tones Dissonance
 def dis_bi(root, second, overtone_range):
     dis_list = [[] for _ in range(overtone_range)]
 
@@ -184,19 +185,19 @@ def dis_bi(root, second, overtone_range):
     
     return d_par
 
-# 3 tones dissonance
+# 3 tones Dissonance
 def dis_tri(root, second, third, overtone_range):
     return (dis_bi(root, second, overtone_range) + dis_bi(second, third, overtone_range) + dis_bi(root, third, overtone_range)) / 3
 
-# 4 tones dissonance
+# 4 tones Dissonance
 def dis_tet(root, second, third, forth, overtone_range):
     return (dis_bi(root, second, overtone_range) + dis_bi(root, third, overtone_range) + dis_bi(root, forth, overtone_range) + dis_bi(second, third, overtone_range) + dis_bi(second, forth, overtone_range) + dis_bi(third, forth, overtone_range)) / 6
 
-# tension caliculation
+# Tension caliculation
 def tension_partial(f1, f2, f3, a1, a2, a3):
     return a1 * a2 * a3 * math.exp((-1) * (((math.log(f3 / f2, b) - math.log(f2 / f1, b)) / a) ** 2))
   
-# 3 tones tension
+# 3 tones Tension
 def ten_tri(root, second, third, overtone_range):
     for o_r in range(0, overtone_range):
         t_par = 0
@@ -218,15 +219,15 @@ def ten_tri(root, second, third, overtone_range):
                     t_par += tension_partial(sorted_freq[0], sorted_freq[1], sorted_freq[2], float(eval(partial1_amp)), float(eval(partial2_amp)), float(eval(partial3_amp)))
     return t_par
 
-# 4 tones tension
+# 4 tones Tension
 def ten_tet(root, second, third, forth, overtone_range):
     return (ten_tri(root, second, third, overtone_range) + ten_tri(root, second, forth, overtone_range) + ten_tri(root, third, forth, overtone_range) + ten_tri(second, third, forth, overtone_range)) / 4
 
-# modality caliculation
+# Modality caliculation
 def modality_partial(f1, f2, f3, a1, a2, a3):
     return (-1) * a1 * a2 * a3 * (2 * (math.log(f3 / f2, b) - math.log(f2 / f1, b)) / e) * math.exp((1) * ((-1) * ((math.log(f3 / f2, b) - math.log(f2 / f1, b))) ** 4) / 4)
 
-# 3 tones modality
+# 3 tones Modality
 def mod_tri(root, second, third, overtone_range):
     for o_r in range(0, overtone_range):
         m_par = 0
@@ -248,10 +249,17 @@ def mod_tri(root, second, third, overtone_range):
                     m_par += modality_partial(sorted_freq[0], sorted_freq[1], sorted_freq[2], float(eval(partial1_amp)), float(eval(partial2_amp)), float(eval(partial3_amp)))
     return m_par
 
-# 4 tones modality
+# 4 tones Modality
 def mod_tet(root, second, third, forth, overtone_range):
     return (mod_tri(root, second, third, overtone_range) + mod_tri(root, second, forth, overtone_range) + mod_tri(root, third, forth, overtone_range) + mod_tri(second, third, forth, overtone_range)) / 4
 
+# 3 tones Instability
+def ins_tri(root, second, third, overtone_range):
+    return dis_tri(root, second, third, overtone_range) + sigma * ten_tri(root, second, third, overtone_range)
+
+# 4 tones Instability
+def ins_tet(root, second, third, forth, overtone_range):
+    return dis_tet(root, second, third, forth, overtone_range) + sigma * ten_tet(root, second, third, forth, overtone_range)
 
 if __name__ == "__main__":
     main()
