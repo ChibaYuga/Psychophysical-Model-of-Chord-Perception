@@ -10,6 +10,7 @@ beta2 = 1.60
 beta3 = 4.00
 gamma = 1.250
 a = 0.60
+e = 1.558
 
 # 音程(log(f2/f1))の底
 b = pow(2, 1.0/12.0)
@@ -82,14 +83,14 @@ def main():
     # print(tension_tri)
 
 
-    tension_tet = ten_tet(0, 4, 7, 11, overtone_range)
-    print("tension of CM7 : " +str(tension_tet))
+    # tension_tet = ten_tet(0, 4, 7, 11, overtone_range)
+    # print("tension of CM7 : " +str(tension_tet))
 
     
 
-    ten_list =[]
+    mod_list =[]
     for i in range(0,forth):
-        ten_list.append(ten_tet(root, second, third, overtone_range))
+        mod_list.append(mod_tet(root, second, third, third + i, overtone_range))
 
     # dissonance_tri = dis_tri(root, second, third, overtone_range)
     # print(ten_list)
@@ -99,13 +100,13 @@ def main():
     t = np.linspace(0, forth-1, forth)
 
     ax.set_xlabel('third interval(semitone)')
-    ax.set_ylabel('tension')
-    ax.set_title(r'T')
+    ax.set_ylabel('modality')
+    ax.set_title(r'M')
 
     figsize=(6.4, 4.8/0.96)
 
     ax.grid()
-    ax.plot(t, ten_list)
+    ax.plot(t, mod_list)
 
     # 凡例
     ax.legend(loc=0)   
@@ -217,9 +218,39 @@ def ten_tri(root, second, third, overtone_range):
                     t_par += tension_partial(sorted_freq[0], sorted_freq[1], sorted_freq[2], float(eval(partial1_amp)), float(eval(partial2_amp)), float(eval(partial3_amp)))
     return t_par
 
-# 4tones tension
+# 4 tones tension
 def ten_tet(root, second, third, forth, overtone_range):
     return (ten_tri(root, second, third, overtone_range) + ten_tri(root, second, forth, overtone_range) + ten_tri(root, third, forth, overtone_range) + ten_tri(second, third, forth, overtone_range)) / 4
+
+# modality caliculation
+def modality_partial(f1, f2, f3, a1, a2, a3):
+    return (-1) * a1 * a2 * a3 * (2 * (math.log(f3 / f2, b) - math.log(f2 / f1, b)) / e) * math.exp((1) * ((-1) * ((math.log(f3 / f2, b) - math.log(f2 / f1, b))) ** 4) / 4)
+
+# 3 tones modality
+def mod_tri(root, second, third, overtone_range):
+    for o_r in range(0, overtone_range):
+        m_par = 0
+        for i in range(0, o_r+1):
+            for j in range(0, o_r+1):
+                for k in range(0, o_r+1):
+                    partial1_amp = "F" + str(i) + "_amp[" + str(root) + "]"
+                    partial2_amp = "F" + str(j) + "_amp[" + str(second) + "]"
+                    partial3_amp = "F" + str(k) + "_amp[" + str(third) + "]"
+                    partial1_freq = "F" + str(i) + "_freq[" + str(root) + "]"
+                    partial2_freq = "F" + str(j) + "_freq[" + str(second) + "]"
+                    partial3_freq = "F" + str(k) + "_freq[" + str(third) + "]"
+
+                    # 選んだ3音を小さい順にソート
+                    # 音量(振幅)は積を使うだけなのでそのまま
+                    sorted_freq = [float(eval(partial1_freq)), float(eval(partial2_freq)), float(eval(partial3_freq))]
+                    sorted_freq.sort()
+
+                    m_par += modality_partial(sorted_freq[0], sorted_freq[1], sorted_freq[2], float(eval(partial1_amp)), float(eval(partial2_amp)), float(eval(partial3_amp)))
+    return m_par
+
+# 4 tones modality
+def mod_tet(root, second, third, forth, overtone_range):
+    return (mod_tri(root, second, third, overtone_range) + mod_tri(root, second, forth, overtone_range) + mod_tri(root, third, forth, overtone_range) + mod_tri(second, third, forth, overtone_range)) / 4
 
 
 if __name__ == "__main__":
