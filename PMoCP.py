@@ -96,75 +96,66 @@ def main():
     forth = 13 -third + root
     overtone_range = 6
     
-    rootD = "C4"
-    secondD = "E4"
-    thirdD = "G4"
-    forthD = "B4"
-
-    # print(dis_tet(root, second, third, overtone_range))
-    print(ins_tri(rootD, 
-                  secondD, 
-                  thirdD, 
-                #   forthD,
-                  overtone_range))
-
-    # tension_tri = ten_tri(root, second, third, overtone_range)
-    # print(tension_tri)
-
-
-    # tension_tet = ten_tet(0, 4, 7, 11, overtone_range)
-    # print("tension of CM7 : " +str(tension_tet))
-
+    print("You can use these notes.")
+    print(pitchName)
     
+    print("number of notes(2~4) : ", end="")
+    num = int(input()) 
 
-    # ins_list =[]
-    # for i in range(0,forth):
-    #     ins_list.append(ins_tet(root, second, third, third + i, overtone_range))
+    if num == 2:
+        print("first : ", end="") 
+        firstD = input()
+        print("second : ", end="") 
+        secondD = input()
 
-    # # dissonance_tri = dis_tri(root, second, third, overtone_range)
-    # # print(ten_list)
-    
-    # # グラフ
-    # fig, ax = plt.subplots()
-    # t = np.linspace(0, forth-1, forth)
+        if (firstD in pitchName) and (secondD in pitchName):
+            print("This cord is composed of " + firstD + ", " + secondD + ". \n")
 
-    # ax.set_xlabel('third interval(semitone)')
-    # ax.set_ylabel('Instability')
-    # ax.set_title(r'I')
+            print("Dissonnace : " + str(dis_bi(firstD, secondD, overtone_range)))
+            print("Tension, Modality and Instability cannot be defined.")
+        else:
+            print("Note is inappropriate.")
 
-    # figsize=(6.4, 4.8/0.96)
+    elif num == 3:
+        print("first : ", end="") 
+        firstD = input()
+        print("second : ", end="") 
+        secondD = input()
+        print("third : ", end="")
+        thirdD = input()
 
-    # ax.grid()
-    # ax.plot(t, ins_list)
+        if (firstD in pitchName) and (secondD in pitchName) and (thirdD in pitchName):
+            print("This cord is composed of " + firstD + ", " + secondD + ", " + thirdD + ". \n")
 
-    # # 凡例
-    # ax.legend(loc=0)   
+            print("Dissonnace : " + str(dis_tri(firstD, secondD, thirdD, overtone_range)))
+            print("Tension : " + str(ten_tri(firstD, secondD, thirdD, overtone_range)))
+            print("Modality : " + str(mod_tri(firstD, secondD, thirdD, overtone_range)))
+            print("Instability : " + str(ins_tri(firstD, secondD, thirdD, overtone_range)))
+        else:
+            print("Note is inappropriate.")
 
-    # # レイアウトの設定
-    # fig.tight_layout()
+    elif num == 4:
+        print("first : ", end="") 
+        firstD = input()
+        print("second : ", end="") 
+        secondD = input()
+        print("third : ", end="")
+        thirdD = input()
+        print("forth : ", end="")  
+        forthD = input()
+        if (firstD in pitchName) and (secondD in pitchName) and (thirdD in pitchName) and (forthD in pitchName):
+            print("This cord is composed of " + firstD + ", " + secondD + ", " + thirdD + ", " + forthD + ". \n")
 
-    # plt.show()  
+            print("Dissonnace : " + str(dis_tet(firstD, secondD, thirdD, forthD, overtone_range)))
+            print("Tension : " + str(ten_tet(firstD, secondD, thirdD, forthD, overtone_range)))
+            print("Modality : " + str(mod_tet(firstD, secondD, thirdD, forthD, overtone_range)))
+            print("Instability : " + str(ins_tet(firstD, secondD, thirdD, forthD, overtone_range)))
+        else:
+            print("Note is inappropriate.")
 
-    # # グラフ
-    # fig, ax = plt.subplots()
-    # t = np.linspace(0, forth-1, forth)
+    else:
+        print("Number of notes is inappropriate.")
 
-    # ax.set_xlabel('3rd interval(semitone)')
-    # ax.set_ylabel('dissonance')
-    # ax.set_title(r'Dissonance')
-
-    # figsize=(6.4, 4.8/0.96)
-
-    # ax.grid()
-    # ax.plot(t, dis_list)
-
-    # # 凡例
-    # ax.legend(loc=0)   
-
-    # # レイアウトの設定
-    # fig.tight_layout()
-
-    # plt.show()  
 
     return
 
