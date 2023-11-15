@@ -23,8 +23,8 @@ def tension_partial(f1, f2, f3, a1, a2, a3):
     return a1 * a2 * a3 * math.exp((-1) * (((math.log(f3 / f2, b) - math.log(f2 / f1, b)) / a) ** 2))
   
 # csv読み込み
-csv_freq = open("./sample_sn_freq.csv", "r")
-csv_dB = open("./sample_sn_dB-0.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -65,21 +65,22 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
-# root      : 最低音
-# second    : 二音目
-# base      : 調
-# ind       : 三音目(最低音の1オクターブ上まで動かす)
-# i         : 最低音の倍音のためのindex(~5)、最低音のi倍音まで計算に利用する
-# j         : 二音目の倍音のためのindex(~5)、二音目のj倍音まで計算に利用する
-# k         : 三音目の倍音のためのindex(~5)、三音目のk倍音まで計算に利用する
-
+# ----------------------------------------------------------
+# root          : 最低音
+# second        : 二音目
+# third         : 三音目のとりうる一番高い音
+# base_range    : 最低音の動かす範囲（半音数）（root = 0, base_range = 12のときC4~B4）
+# ind           : 三音目をthirdまで動かす
+# i             : 最低音の倍音のためのindex。F5まで計算に利用する
+# j             : 二音目の倍音のためのindex。F5まで計算に利用する
+# k             : 三音目の倍音のためのindex。F5まで計算に利用する
+# ten_list      : 緊張度。最低音ごとに格納
+# ----------------------------------------------------------
 # C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B
 # 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11
 
-
-# ルート変化---------------------------------------------------
 root = 0
-second = 3
+second = 4
 third = 13 - second + root
 base_range = 12
 ten_list = [[] for _ in range(base_range)]

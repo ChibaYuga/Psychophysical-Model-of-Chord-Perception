@@ -32,8 +32,8 @@ def dissonance_partial(f1, f2, a1, a2):
     return  a1 * a2 * beta3 * (math.exp((-1) * beta1 * math.log(f2 / f1, b) ** gamma) - math.exp((-1) * beta2 * math.log(f2 / f1, b) ** gamma))
 
 # csv読み込み
-csv_freq = open("./sn_freq.csv", "r")
-csv_dB = open("./sn_dB.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -75,18 +75,21 @@ for row in dB_list:
     F5_amp.append(db2amp(float(row[6]), p_0))
 
 
-# root      : 最低音
-# second    : 二音目
-# base      : 調
-# ind       : 三音目(最低音の1オクターブ上まで動かす)
-# i         : 最低音の倍音のためのindex(~5)、最低音のi倍音まで計算に利用する
-# j         : 二音目の倍音のためのindex(~5)、二音目のj倍音まで計算に利用する
-# k         : 三音目の倍音のためのindex(~5)、三音目のk倍音まで計算に利用する
-
+# ----------------------------------------------------------
+# root          : 最低音
+# second        : 二音目
+# third         : 三音目のとりうる一番高い音
+# base_range    : 最低音の動かす範囲（半音数）（root = 0, base_range = 12のときC4~B4）
+# ind           : 三音目をthirdまで動かす
+# i             : 最低音の倍音のためのindex。F5まで計算に利用する
+# j             : 二音目の倍音のためのindex。F5まで計算に利用する
+# k             : 三音目の倍音のためのindex。F5まで計算に利用する
+# dis_list      : 不協和度。最低音ごとに格納
+# ten_list      : 緊張度。最低音ごとに格納
+# ins_list      : 不安定度。最低音ごとに格納
+# ----------------------------------------------------------
 # C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B
 # 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11
-
-# ルート変化---------------------------------------------------
 
 root = 0
 second = 4
@@ -165,15 +168,15 @@ for i1 in range(0, base_range):
     for i2 in range(0, third):
         ins_list[i1].append(dis_list[i1][i2] + sigma * ten_list[i1][i2])
 
-for i in range(12):
-    ins_list_op.append([label[i]+"-min1stinv", ins_list[i][5]])
+# for i in range(base_range):
+#     ins_list_op.append([label[i]+"-min1stinv", ins_list[i][5]])
 
 
 # CSV出力
-f = open('out.csv', 'w')
-writer = csv.writer(f)
-writer.writerows(ins_list)
-f.close()
+# f = open('out.csv', 'w')
+# writer = csv.writer(f)
+# writer.writerows(ins_list)
+# f.close()
 
 
 # グラフ

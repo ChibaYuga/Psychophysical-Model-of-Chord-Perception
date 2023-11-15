@@ -16,16 +16,14 @@ sigma = 0.207
 # 音程(log(f2/f1))の底
 b = pow(2, 1.0/12.0)
 
-
-
 # 音データの読み込み--------------------------------------------------------------
 # 倍音を含めた周波数とdB値のcsvファイルからモデル算出用に整形
 # Fn_freq：基音・倍音の周波数のリスト
 # Fn_amp：基音・倍音の振幅（大きさ）のリスト
 
 # csv読み込み
-csv_freq = open("./sn_freq.csv", "r")
-csv_dB = open("./sn_dB.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -70,7 +68,11 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
-pitchName = ["C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5", "C6"]
+pitchName = ["C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2",
+             "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3",
+             "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", 
+             "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5", 
+             "C6", "C#6", "D6", "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6"]
 
 F0_freqDict = dict(zip(pitchName, F0_freq))
 F1_freqDict = dict(zip(pitchName, F1_freq))
@@ -88,20 +90,24 @@ F5_ampDict = dict(zip(pitchName, F5_amp))
 
 # -----------------------------------------------------------------------------
 
-
 def main():
-    root = 0
-    second = 4
-    third = second + 3
-    forth = 13 -third + root
     overtone_range = 6
     
     print("You can use these notes.")
     print(pitchName)
     
+    # 和音構成音数の入力
     print("number of notes(2~4) : ", end="")
-    num = int(input()) 
+    n = input()
 
+    # 数値でなければ終了
+    if not(n.isdecimal()):
+        print("Number of notes is inappropriate.")
+        return
+    
+    num = int(n)
+
+    # 2音のとき，不協和度のみ算出
     if num == 2:
         print("first : ", end="") 
         firstD = input()
@@ -113,9 +119,11 @@ def main():
 
             print("Dissonnace : " + str(dis_bi(firstD, secondD, overtone_range)))
             print("Tension, Modality and Instability cannot be defined.")
+        # 入力された音名が正しくないとき処理をしない
         else:
             print("Note is inappropriate.")
 
+    # 3音のとき，4項目算出
     elif num == 3:
         print("first : ", end="") 
         firstD = input()
@@ -131,9 +139,11 @@ def main():
             print("Tension : " + str(ten_tri(firstD, secondD, thirdD, overtone_range)))
             print("Modality : " + str(mod_tri(firstD, secondD, thirdD, overtone_range)))
             print("Instability : " + str(ins_tri(firstD, secondD, thirdD, overtone_range)))
+        # 入力された音名が正しくないとき処理をしない
         else:
             print("Note is inappropriate.")
 
+    # 4音のとき，4項目算出
     elif num == 4:
         print("first : ", end="") 
         firstD = input()
@@ -150,25 +160,19 @@ def main():
             print("Tension : " + str(ten_tet(firstD, secondD, thirdD, forthD, overtone_range)))
             print("Modality : " + str(mod_tet(firstD, secondD, thirdD, forthD, overtone_range)))
             print("Instability : " + str(ins_tet(firstD, secondD, thirdD, forthD, overtone_range)))
+        # 入力された音名が正しくないとき処理をしない
         else:
             print("Note is inappropriate.")
 
+    # 構成音数が2,3,4以外のとき，処理をしない
     else:
         print("Number of notes is inappropriate.")
 
-
     return
 
-# C4, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B  ~C
-# 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11 ~24
 
-
-
-
-
-
-
-
+# C2, Cs2, ..., A6
+#  0,   1, ..., 57
 
 # Dissonance caliculation
 def dissonance_partial(f1, f2, a1, a2):

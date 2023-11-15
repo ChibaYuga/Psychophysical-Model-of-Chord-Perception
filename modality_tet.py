@@ -21,8 +21,8 @@ def modality_partial(f1, f2, f3, a1, a2, a3):
 
   
 # csv読み込み
-csv_freq = open("./sn_freq.csv", "r")
-csv_dB = open("./sn_dB.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -63,20 +63,22 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
-# root      : 最低音
-# second    : 二音目
-# base      : 調
-# ind       : 三音目(最低音の1オクターブ上まで動かす)
-# i         : 最低音の倍音のためのindex(~5)、最低音のi倍音まで計算に利用する
-# j         : 二音目の倍音のためのindex(~5)、二音目のj倍音まで計算に利用する
-# k         : 三音目の倍音のためのindex(~5)、三音目のk倍音まで計算に利用する
-
+# ----------------------------------------------------------
+# root          : 最低音
+# second        : 二音目
+# third         : 三音目
+# forth         : 四音目のとりうる一番高い音
+# overtone_range: 計算に利用する倍音数（6のときF0~F5）
+# ind           : 四音目をforthまで動かす
+# i             : 最低音の倍音のためのindex。overtone_rangeまで計算に利用する
+# j             : 二音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# k             : 三音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# l             : 四音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# mod_list      : モダリティ。算出に用いた倍音数ごとに格納
+# ----------------------------------------------------------
 # C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B
 # 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11
 
-
-
-# n倍音まで使用----------------------------------------------
 root = 0
 second = 4
 third = second + 3

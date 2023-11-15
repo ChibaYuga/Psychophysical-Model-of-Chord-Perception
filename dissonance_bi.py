@@ -10,9 +10,6 @@ beta2 = 1.60
 beta3 = 4.00
 gamma = 1.250
 
-
-
-
 # 音程(log(f2/f1))の底
 b = pow(2, 1.0/12.0)
 
@@ -28,8 +25,8 @@ def dissonance_partial(f1, f2, a1, a2):
     return  a1 * a2 * beta3 * (math.exp((-1) * beta1 * math.log(f2 / f1, b) ** gamma) - math.exp((-1) * beta2 * math.log(f2 / f1, b) ** gamma))
 
 # csv読み込み
-csv_freq = open("./sn_freq.csv", "r")
-csv_dB = open("./sn_dB.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -70,8 +67,18 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
+# ----------------------------------------------------------
+# root          : 最低音
+# second        : 二音目を動かす範囲（半音数）
+# overtone_range: 計算に利用する倍音数（6のときF0~F5）
+# ind           : root + secondまで動かす
+# i             : 最低音の倍音のためのindex。overtone_rangeまで計算に利用する
+# j             : 二音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# dis_list      : 不協和度。算出に用いた倍音数ごとに格納
+# ----------------------------------------------------------
+# C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B
+# 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11
 
-# n倍音まで使用-----------------------------------------------
 root = 0
 second = 13
 overtone_range = 6
@@ -97,10 +104,10 @@ for o_r in range(0,overtone_range):
 
 
 # CSV出力
-f = open('out.csv', 'w')
-writer = csv.writer(f)
-writer.writerows(dis_list)
-f.close()
+# f = open('out.csv', 'w')
+# writer = csv.writer(f)
+# writer.writerows(dis_list)
+# f.close()
 
 
 # グラフ

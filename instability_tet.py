@@ -26,8 +26,8 @@ def dissonance_partial(f1, f2, a1, a2):
     return  a1 * a2 * beta3 * (math.exp((-1) * beta1 * math.log(f2 / f1, b) ** gamma) - math.exp((-1) * beta2 * math.log(f2 / f1, b) ** gamma))
 
 # csv読み込み
-csv_freq = open("./sn_freq.csv", "r")
-csv_dB = open("./sn_dB.csv", "r")
+csv_freq = open("./pianoC2A6_freq.csv", "r")
+csv_dB = open("./pianoC2A6_dB.csv", "r")
 
 # 行リスト
 freq_list = csv.reader(csv_freq, delimiter = ",", doublequote = True, lineterminator = "\r\n", quotechar = '"', skipinitialspace = True)
@@ -68,9 +68,24 @@ for row in dB_list:
     F4_amp.append(db2amp(float(row[5]), p_0))
     F5_amp.append(db2amp(float(row[6]), p_0))
 
+# ----------------------------------------------------------
+# root          : 最低音
+# second        : 二音目
+# third         : 三音目
+# forth         : 四音目のとりうる一番高い音
+# overtone_range: 計算に利用する倍音数（6のときF0~F5）
+# ind           : 四音目をforthまで動かす
+# i             : 最低音の倍音のためのindex。overtone_rangeまで計算に利用する
+# j             : 二音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# k             : 三音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# l             : 四音目の倍音のためのindex。overtone_rangeまで計算に利用する
+# dis_list      : 不協和度。算出に用いた倍音数ごとに格納
+# ten_list      : 緊張度。算出に用いた倍音数ごとに格納
+# ins_list      : 不安定度。算出に用いた倍音数ごとに格納
+# ----------------------------------------------------------
+# C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B
+# 0, 1 , 2, 3 , 4, 5, 6 , 7, 8 , 9, 10, 11
 
-
-# n倍音まで使用----------------------------------------------
 root = 0
 second = 4
 third = second + 3
@@ -190,10 +205,10 @@ for i1 in range(0, overtone_range):
         ins_list[i1].append(dis_list[i1][i2] + sigma * ten_list[i1][i2])
 
 # CSV出力
-f = open('out.csv', 'w')
-writer = csv.writer(f)
-writer.writerows(ins_list)
-f.close()
+# f = open('out.csv', 'w')
+# writer = csv.writer(f)
+# writer.writerows(ins_list)
+# f.close()
 
 
 # グラフ
